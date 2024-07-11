@@ -4,21 +4,18 @@ const bcrypt = require("bcrypt");
 const app = express();
 const port = 3000;
 
-// Middleware para analisar o corpo da solicitação como JSON
 app.use(bodyParser.json());
 
-// Array que guarda os novos usuários
+
 const users = [];
-// Array que guarda as novas mensagens
 const messages = [];
 
-// Função que verifica se um email já está cadastrado no array de usuários
-const isEmailRegistered = (email) => users.some((user) => user.email === email);
 
-// Função que obtém o usuário pelo email
+const isEmailRegistered = (email) => users.some((user) => user.email === email);
 const getUserByEmail = (email) => users.find((user) => user.email === email);
 
-// Endpoint que cria os usuários
+
+// Criar um novo usuário
 app.post("/signup", (request, response) => {
   const { name, email, password } = request.body;
 
@@ -69,8 +66,7 @@ app.post("/signup", (request, response) => {
       });
   });
 });
-
-// Endpoint para login de usuários
+// Entrar em uma conta existente
 app.post("/login", (request, response) => {
   const { email, password } = request.body;
 
@@ -108,8 +104,7 @@ app.post("/login", (request, response) => {
       });
   });
 });
-
-// Endpoint para criar uma mensagem
+// Endpoint para enviar uma nova mensagem
 app.post('/message', (request, response) => {
     const { email, title, description } = request.body;
 
@@ -140,7 +135,6 @@ app.post('/message', (request, response) => {
 
     return response.status(201).json({ message: `Mensagem criada com sucesso!`, messageData: newMessage.description });
 });
-
 // Endpoint para listar as mensagens
 app.get('/message/:email', (request, response) => {
     const { email } = request.params;
@@ -156,7 +150,6 @@ app.get('/message/:email', (request, response) => {
 
     return response.status(200).json({ message: `Seja bem-vindo! Aqui estão as suas mensagens:`, messages: userMessages});
 });
-
 // Endpoint para atualizar as mensagens
 app.put('/message/:id', (request, response) => {
     const { id } = request.params;
@@ -179,7 +172,6 @@ app.put('/message/:id', (request, response) => {
 
     return response.status(200).json({ message: 'Mensagem atualizada com sucesso!', updatedMessage: message });
 });
-
 // Endpoint para deletar as mensagens
 app.delete('/message/:id', (request, response) => {
     const { id } = request.params;
@@ -202,5 +194,5 @@ app.get("/", (request, response) => {
 
 // Iniciar o servidor
 app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`);
+  console.log(`Olá... Servidor rodando em http://localhost:${port}`);
 });
