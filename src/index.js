@@ -4,13 +4,12 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const app = express();
 //const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 
 const port = 3000;
 
 app.use(cors())
 //uuidv4();
-
-
 
 app.use(bodyParser.json());
 
@@ -89,8 +88,6 @@ app.post("/login", async (request, response) => {
       user: user.email
     });
   });
-
-
 // Endpoint para enviar uma nova mensagem
 app.post("/message", (request, response) => {
   const { email, title, description } = request.body;
@@ -224,6 +221,37 @@ app.delete("/message/:id", (request, response) => {
     .status(200)
     .json({ message: "Mensagem apagada com sucesso!" });
 });
+//Rota para listar todos os recados com paginacao
+app.get("/:user", (request, response) => {
+  const { user } = request.params;
+  const { page, perPage} = request.query
+  
+  const currentPage = parseInt(page) || 1 //valor padrao é 1
+  const itemsPerPage = parseInt(perPage) || 10
+console.log(users)
+  const usuario = users.find(user => user.email === user)
+  
+    if (!usuario) {
+    return response.status(404).json({
+      message: "Usuário não encontradooo."
+    });
+  }
+
+  const userNotes = notes.filter(note => note.userId === user)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedNotes = userNotes.slice(startIndex, endIndex)
+  const totalItems = userNotes.length
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+
+return response.status(200).json({
+    userNotes: paginatedNotes,
+    totalPages,
+    currentPage
+  });
+});
+
+
 
 app.get("/details/:id", (request, response) => {
   const { id } = request.params
